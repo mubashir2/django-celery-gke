@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: gcr.io/gke-fatafat-mub/gke_django_app:v1.0.0
+        image: gcr.io/gke-fatafat-mub/my_djago_app:v1.0.1
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
