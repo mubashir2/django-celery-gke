@@ -10,3 +10,5 @@ Simply, run the following command:
 ```
 docker-compose up -d --build
 ```
+
+enable cloudbuild api
