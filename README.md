@@ -178,5 +178,35 @@ Now go to :
 https://console.cloud.google.com/kubernetes/workload/overview?project=PROJECT_ID  
 replace PROJECT_ID with your project id (you can use echo $PROJECT_ID in terminal to get your project id).
 For __NAMESPACE__  and __CLUSTER_NAME__ refer to [__*Variables*__](#variables).  
- Now select the deployment where Name=app and Type=Deployment and Namespace=NAMESPACE and Cluster=CLUSTER_NAME
- 
+Now select the Deployemnt where Name=app and Type=Deployment and Namespace=NAMESPACE and Cluster=CLUSTER_NAME
+![](images/select_deployment_1.png)  
+  
+
+
+
+
+Now in Deployment details Select Actions -> Then Select Automated Deployment  
+![](images/select_auto_deployment.png)  
+  
+
+
+Now in Automate Deployment -> In 1. Source Repository, set "Repository Providor" to Github, authenticate and link Github repo and then select repo.   
+Then press continue.  
+![](images/select_repo.png)  
+  
+  
+
+Now in Automate Deployment -> In 2. Build Configurations, set "Branch" to branch on which you want to add trigger, and set other fields accordingly and press contiue.  
+![](images/set_build_configurations.png)  
+  
+  
+
+Now in Automate Deployment -> In 3. Automated deployment configuration, set "YAML location" location and name accordingly.  
+Then click in "VIEW GOOGLE-RECOMMENDED YAML" -> Then copy the configurations text and save then on local machine in same file (create if needed) as mentioned in "YAML location"  
+![](images/automated_deployment_config.png)   
+  
+
+
+Then press "SET UP"  
+
+Now on new commit in the mentioned branch will trigger the build and New Image will be created and new Deployment will be created.  
