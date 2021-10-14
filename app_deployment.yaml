@@ -16,7 +16,14 @@ spec:
     spec:
       containers:
       - name: app
-        image: gcr.io/gke-fatafat-mub/my_djago_app:v1.0.1
+        image: gcr.io/gke-fatafat-mub/testing
         imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "2048Mi"
+            cpu: "2000m"
         ports:
         - containerPort: 8000
