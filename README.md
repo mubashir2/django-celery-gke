@@ -4,16 +4,18 @@
 
 Docker Nginx Django Redis Celery Supervisor
 
-## Getting Started
-This project works on Python 3+ and Django 2+.
-Simply, run the following command:
-```
-docker-compose up -d --build
-```
+### Prerequisite  
 
-enable cloudbuild api
+  1. Access to https://console.cloud.google.com/ 
+  2. Project is created with billing enabled.
+  3. Cloudsdk setup on local machine or access to cloud shell on gcp console.
 
 
+Clone this repository on either environment (local machine or cloud shell).  
+
+Change working directory to root of this repo.  
+
+Use ```gcloud init``` to configure gcloud environment. (For selecting __PROJECT_ID__ and __REGION/Zone__ refer to [__*Variables*__](#variables) section.)
 # Deployemnt of Django Celery App  
 
 ## Major Components  
@@ -24,9 +26,8 @@ enable cloudbuild api
     4. Cloud Build (Continous Deployment)
 
 ## Enable API's  
-We will use the following apis:
 
-Enable the apis:
+Enable the apis which will be used by project:
 ```
 gcloud services enable \
  container.googleapis.com \
@@ -35,9 +36,6 @@ gcloud services enable \
  secretmanager.googleapis.com \
  sourcerepo.googleapis.com
 ```
-    1. container.googleapis.com
-    2. sqladmin.googleapis.com
-
 ## Variables  
 
 ```  
@@ -77,6 +75,7 @@ CLOUDBUILD=${PROJECTNUM}@cloudbuild.gserviceaccount.com
 ```  
 ## Create Custom Service Account for GKE and Add IAM Biniding/roles  
 
+ For __SA_NAME__ and __SERVICE_ACCOUNT__ refer to [__*Variables*__](#variables) section.
 create service account
 ```
 gcloud iam service-accounts create $SA_NAME --display-name=$SA_NAME
@@ -119,7 +118,7 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 ## Create GKE Cluster  
 
 Execute the following command to create GKE cluster.  
-
+For __PROJECT_ID, CLUSTER_NAME, COMPUTE_REGION, SERVICE_ACCOUNT, NUM_OF_NODES, NETWORK, SUB_NET (env variables)__ refer to [__*Variables*__](#variables) section.
 ```
 gcloud beta container --project $PROJECT_ID clusters create $CLUSTER_NAME --region $COMPUTE_REGION --no-enable-basic-auth --cluster-version "1.20.10-gke.301" --release-channel "regular" --machine-type "e2-medium" --image-type "COS_CONTAINERD" --disk-type "pd-standard" --disk-size "100" --metadata disable-legacy-endpoints=true --service-account $SERVICE_ACCOUNT --max-pods-per-node "110" --num-nodes $NUM_OF_NODES --logging=SYSTEM,WORKLOAD --monitoring=SYSTEM --enable-ip-alias --network $NETWORK --subnetwork $SUB_NET --no-enable-intra-node-visibility --default-max-pods-per-node "110" --no-enable-master-authorized-networks --addons HorizontalPodAutoscaling,HttpLoadBalancing,GcePersistentDiskCsiDriver --enable-autoupgrade --enable-autorepair --max-surge-upgrade 1 --max-unavailable-upgrade 0 --enable-shielded-nodes
 ```
@@ -152,7 +151,8 @@ kubectl apply -f redis-service.yaml --namespace=$NAMESPACE
 
 ### Build and push image to gcr.io  
 
-Build Image and push to gcr.io
+Build Image from Dockerfile in working directory and push to gcr.io
+For __PROJECT_ID, IMAGE_NAME__ refer to [__*Variables*__](#variables) section.
 ```
 TAG=gcr.io/$PROJECT_ID/$IMAGE_NAME
 docker build --tag $TAG .
@@ -175,8 +175,9 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 ```
 ### Configure Continous Deployment  
 Now go to :
+*replace PROJECT_ID with your project id (you can use echo $PROJECT_ID in terminal to get your project id).*  
 https://console.cloud.google.com/kubernetes/workload/overview?project=PROJECT_ID  
-replace PROJECT_ID with your project id (you can use echo $PROJECT_ID in terminal to get your project id).
+
 For __NAMESPACE__  and __CLUSTER_NAME__ refer to [__*Variables*__](#variables).  
 Now select the Deployemnt where Name=app and Type=Deployment and Namespace=NAMESPACE and Cluster=CLUSTER_NAME
 ![](images/select_deployment_1.png)  
