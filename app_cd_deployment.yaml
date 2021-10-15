@@ -62,7 +62,19 @@ metadata:
               'f:terminationGracePeriodSeconds': {}
       manager: kubectl-client-side-apply
       operation: Update
-      time: '2021-10-14T13:38:18Z'
+      time: '2021-10-15T13:03:22Z'
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          'f:template':
+            'f:metadata':
+              'f:annotations':
+                .: {}
+                'f:kubectl.kubernetes.io/restartedAt': {}
+      manager: kubectl-rollout
+      operation: Update
+      time: '2021-10-15T13:18:22Z'
     - apiVersion: apps/v1
       fieldsType: FieldsV1
       fieldsV1:
@@ -95,7 +107,7 @@ metadata:
           'f:updatedReplicas': {}
       manager: kube-controller-manager
       operation: Update
-      time: '2021-10-14T13:38:19Z'
+      time: '2021-10-15T13:43:46Z'
   name: app
   namespace: testing
 spec:
@@ -110,12 +122,13 @@ spec:
     type: RollingUpdate
   template:
     metadata:
+      annotations:
+        kubectl.kubernetes.io/restartedAt: '2021-10-15T18:43:43+05:00'
       labels:
         pod: app
     spec:
       containers:
-        - image: >-
-            gcr.io/gke-fatafat-mub/github.com/muhammadmubashir2329/django-celery-gke
+        - image: gcr.io/gke--build/github.com/muhammadmubashir2329/django-celery-gke
           imagePullPolicy: Always
           name: app
           ports:
@@ -160,7 +173,7 @@ metadata:
           'f:type': {}
       manager: kubectl-client-side-apply
       operation: Update
-      time: '2021-10-14T13:13:15Z'
+      time: '2021-10-15T13:07:22Z'
     - apiVersion: v1
       fieldsType: FieldsV1
       fieldsV1:
@@ -173,16 +186,16 @@ metadata:
             'f:ingress': {}
       manager: kube-controller-manager
       operation: Update
-      time: '2021-10-14T13:14:04Z'
+      time: '2021-10-15T13:08:07Z'
   name: app
   namespace: testing
 spec:
-  clusterIP: 10.108.13.216
+  clusterIP: 10.108.14.46
   clusterIPs:
-    - 10.108.13.216
+    - 10.108.14.46
   externalTrafficPolicy: Cluster
   ports:
-    - nodePort: 30055
+    - nodePort: 32738
       port: 80
       protocol: TCP
       targetPort: 8000

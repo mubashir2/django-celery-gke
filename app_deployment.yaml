@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: gcr.io/gke-fatafat-mub/testing
+        image: gcr.io/gke--build/testing
         imagePullPolicy: Always
         resources:
           requests:

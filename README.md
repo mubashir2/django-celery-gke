@@ -34,7 +34,9 @@ gcloud services enable \
  sqladmin.googleapis.com \
  cloudbuild.googleapis.com \
  secretmanager.googleapis.com \
- sourcerepo.googleapis.com
+ sourcerepo.googleapis.com \
+ servicenetworking.googleapis.com \
+ compute.googleapis.com
 ```
 ## Variables  
 
@@ -47,6 +49,11 @@ ZONE=us-central1-c
 SA_NAME=fatafatgke
 # Service Account complete name
 SERVICE_ACCOUNT=fatafatgke@$PROJECT_ID.iam.gserviceaccount.com
+
+# Database credentials 
+DBPASS="$(cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 30 | head -n 1)"
+SQL_INSTANCE_ID=myinstance
+
 
 CLUSTER_NAME=cluster-2
 # Number of Nodes in the Cluster
@@ -114,7 +121,41 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
   --member "serviceAccount:$SERVICE_ACCOUNT" \
   --role roles/secretmanager.secretAccessor
 ```
+### Configure Private Services Access for CloudSQL private instance  
+This is one time process for a project.  
+For __PROJECT_ID__ refer to [__*Variables*__](#variables) section.  
+```
+# configure ip address allocation range
+gcloud compute addresses create google-managed-services-default \
+--global \
+--purpose=VPC_PEERING \
+--prefix-length=16 \
+--network=default
 
+# Creating a private connection from your VPC network (default) to the underlying service producer network
+gcloud services vpc-peerings connect \
+--service=servicenetworking.googleapis.com \
+--ranges=google-managed-services-default \
+--network=default \
+--project=$PROJECT_ID
+```
+
+## Create Database  
+For __SQL_INSTANCE_ID, PROJECT_ID, DBPASS__ refer to [__*Variables*__](#variables) 
+```
+gcloud beta sql instances create $SQL_INSTANCE_ID --no-assign-ip --project $PROJECT_ID --network=default --root-password=$DBPASS  --database-version  POSTGRES_13  --tier db-f1-micro --region $REGION
+```
+## Create Secret  
+  *documentation details of this section is pending*
+```
+rm .env 2> /dev/null
+source create_configurations.sh
+gcloud secrets create application_settings --data-file=.env
+```  
+If above command gives error "Secret Already Exists", use:
+```
+gcloud secrets versions add  application_settings --data-file=.env
+```
 ## Create GKE Cluster  
 
 Execute the following command to create GKE cluster.  
@@ -164,6 +205,10 @@ Go to app_deployment.yaml, to spec.template.spec.containers.image and change the
 To get YOUR_PROJECT_NAME use ```echo $PROJECT_NAME``` and for YOUR_IMAGE_NAME use ```echo $IMAGE_NAME```
 ```
 kubectl apply -f app_deployment.yaml --namespace $NAMESPACE
+```
+
+```
+kubectl apply -f app_service.yaml --namespace $NAMESPACE
 ```
 ### Allow Cloud Build iam role to deploy to GKE cluster  
 For __CLOUDBUILD__ refer to [__*Variables*__](#variables) section.  
