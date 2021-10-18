@@ -146,7 +146,7 @@ For __SQL_INSTANCE_ID, PROJECT_ID, DBPASS__ refer to [__*Variables*__](#variable
 gcloud beta sql instances create $SQL_INSTANCE_ID --no-assign-ip --project $PROJECT_ID --network=default --root-password=$DBPASS  --database-version  POSTGRES_13  --tier db-f1-micro --region $REGION
 ```
 ## Create Secret  
-  *documentation details of this section is pending*
+
 ```
 rm .env 2> /dev/null
 source create_configurations.sh
