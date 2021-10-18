@@ -1,6 +1,5 @@
-# cloudgeeks.ca
 
-# docker-django-redis-celery-nginx-supervisor
+# Django Celery Application on GKE   
 
 Docker Nginx Django Redis Celery Supervisor
 
